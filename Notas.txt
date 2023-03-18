@@ -1,0 +1,34 @@
+Spike Sorting (Sergio Parra)
+
+Pasos para el Sorting de espigas
+
+1.-Filtrado (Pasa altas)
+	
+	Detección de un Potencial de Acción
+	Colocación de un umbral: El umbral se determina con base en desviación estandar de la media de toda la señal
+
+	Se debe realizar una alineación, en este caso se usa el valor mínimo de la señal siendo este el máximo potencial de acción porque se esta llevando a cabo un registro extracelular
+
+	Se lleva a cabo una interpolación para incremntar el número de puntos con el fin de obtener un mínimo mas preciso, pero se debe regresar a la señal original para que la memoria ocupada no crezca.
+
+	                   /   |senal|    \
+	                   | ____________ |
+	Thr = 4 * mediana  \    0.6745    /
+
+	Que es aproximadamente 2 desviaciones estandar
+
+2.-Clasificación con base en su forma
+
+	Se usa UMAP que se basa en características topológicas para hacer la reducción de dimensiones de las señales. Pero se requiere una gran cantidad de datos para que funcione de manera óptima
+
+3.-Problemas del movimiento de electrodos (Esto no se ve en el MEA invitro)
+
+
+Se debe construir un diccionario con las siguientes características...
+
+Diccionario .pkl investigar archivos .PKL
+
+keys -> 'Values', 'Time(s)', 'x', 'channel'
+
+donde x es el conteo del número de espigas
+
