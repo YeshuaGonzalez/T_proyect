@@ -31,4 +31,3 @@ Diccionario .pkl investigar archivos .PKL
 keys -> 'Values', 'Time(s)', 'x', 'channel'
 
 donde x es el conteo del número de espigas
-
