@@ -127,3 +127,4 @@ def spike_reducer(
     # outliers = np.where(umap.utils.disconnected_vertices(reducer))[0]
 
     return reducer
+
