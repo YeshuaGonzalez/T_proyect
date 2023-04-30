@@ -11,13 +11,8 @@ import dearpygui.dearpygui as dpg
 import h5py
 import numpy as np
 #import matplotlib.pyplot as plt
-import os
 #from tqdm import tqdm
 
-
-#Global varibales
-x_data=[]
-y_data=[]
 
 #Charging phase 
 # path_file = "E:\\ExpRecientes\\PRK20220816s01_RAW.h5"
@@ -66,12 +61,6 @@ def callback_plot(sender, app_data):
         channel_data = file['Data']['Recording_0']['AnalogStream']['Stream_0']['ChannelData']
         signal_data = np.array(channel_data[52])
         
-        #creating data
-        # for i in range(0, 30000):
-        #     print(i)
-        #     x_data.append(i)
-        #     y_data.append(signal_data[i])
-        
         x_data_np = np.arange(0, 10000, 1)
         y_data_np = signal_data[0:10000]
         print("Finish...")
@@ -101,12 +90,13 @@ with dpg.file_dialog(directory_selector = False,
 
 with dpg.window(label="Simple plot example"):
     
+    #create file & directory selector
+    button_file = dpg.add_button(label = "File Selector", 
+                                 callback = lambda: dpg.show_item("file_dialog_id"))
+    #dpg.bind_item_theme(button_file, orng_btn_theme)
+    dpg.add_same_line()
     # label: Path File Name
     label1_control = dpg.add_text("File path")
-    
-    #create file & directory selector
-    dpg.add_button(label = "File Selector", 
-                   callback = lambda: dpg.show_item("file_dialog_id"))
     
     dpg.add_button(label = "Plot segment 52",
                    callback = callback_plot)
