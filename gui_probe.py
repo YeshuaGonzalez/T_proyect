@@ -30,7 +30,7 @@ def callback(sender, app_data):
     dpg.set_value(label1_control,app_data['file_path_name'])
     
     print("Charging file ... ")
-    
+    dpg.set_value(messages, "Charging file ... ")
     path_file = app_data['file_path_name']
     #print(os.path.abspath(path_file))
     try :
@@ -38,7 +38,6 @@ def callback(sender, app_data):
         file = h5py.File(path_file)
         global channel_data
         channel_data = file['Data']['Recording_0']['AnalogStream']['Stream_0']['ChannelData']
-        print("Point")
         options = list(range(0,len(channel_data)))
         dpg.configure_item(combo1, items = options)
         
@@ -47,7 +46,7 @@ def callback(sender, app_data):
         print("Error to charge file")
     
     print("End charge ... ")   
-    
+    dpg.set_value(messages, "End charge :)")
 
 def cancel_callback(sender, app_data):
     print('Cancel was clicked.')
@@ -56,22 +55,27 @@ def cancel_callback(sender, app_data):
     
 def callback_plot(sender, app_data):
     
-    print('file' in globals())
-    print('channel_data' in globals())
+    #print('file' in globals())
+    #print('channel_data' in globals())
     if dpg.get_value(label1_control) != "File path" and 'file' in globals() and 'channel_data' in globals():
-        
+        dpg.set_value(messages, "Plotting")
         index = dpg.get_value(combo1)
         
         if index != "Channel" and not(int(index) in channel_list):
             signal_data = np.array(channel_data[int(index)])
             
-            x_data_np = np.arange(0, 10000, 1)
-            y_data_np = signal_data[0:10000]
+            #x_data_np = np.arange(0, 10000, 1)
+            #y_data_np = signal_data[0:10000]
+            ini = int(dpg.get_value(val_ini))
+            fin = int(dpg.get_value(val_fin))
+            x_data_np = np.arange(ini, fin, 1)
+            y_data_np = signal_data[ini:fin]
             
             #series belong to a y axis
             dpg.add_line_series(x_data_np, y_data_np, label="ch {}".format(index), parent="y_axis")
             channel_list.append(int(index))
             print("Finish...")
+            dpg.set_value(messages, "Finish ...")
             print(channel_list)
         else :
             print("Este canal ya se cargo / Seleccione un canal")
@@ -79,10 +83,11 @@ def callback_plot(sender, app_data):
         
     else:
         print("Callback plot ready!")
+        dpg.set_value(messages, "Call back plot ready!")
     
 #__________________________________________________
 
-dpg.create_viewport(title='GUI test', width=1000, height=700)
+dpg.create_viewport(title='GUI test', width=1000, height=800)
 
 # file & directory selector configuration
 with dpg.file_dialog(directory_selector = False,
@@ -101,21 +106,23 @@ with dpg.file_dialog(directory_selector = False,
 
 with dpg.window(label="Simple plot example"):
     
+    '''Line 1'''
+    with dpg.group(horizontal = True):
     #create file & directory selector
-    button_file = dpg.add_button(label = "File Selector", 
+        button_file = dpg.add_button(label = "File Selector", 
                                  callback = lambda: dpg.show_item("file_dialog_id"))
-    #dpg.bind_item_theme(button_file, orng_btn_theme)
-    dpg.add_same_line()
     # label: Path File Name
-    label1_control = dpg.add_text("File path")
-    
-    dpg.add_button(label = "Plot channel",
+        label1_control = dpg.add_text("File path")
+    '''Line 2'''
+    with dpg.group(horizontal = True):
+        dpg.add_button(label = "Plot channel",
                    callback = callback_plot)
-    dpg.add_same_line()
     
-    combo1 = dpg.add_combo(("Channel"), default_value = "Channel")
-    
-    #dpg.configure_item(combo1, items = ("Opción 3", "Opción 4", " "))
+        combo1 = dpg.add_combo(["Channel"], default_value = "Channel")
+    '''Line 3'''
+    with dpg.group(horizontal = True):
+        val_ini = dpg.add_input_text(default_value = "0", label = "Valor inicial", width = 100)
+        val_fin = dpg.add_input_text(default_value = "1000", label = "Valor final", width = 100)
 
     #create plot
     with dpg.plot(label="Raw Data", width=800, height=600):
@@ -124,6 +131,7 @@ with dpg.window(label="Simple plot example"):
         #Create x and y axes
         dpg.add_plot_axis(dpg.mvXAxis, label="x")
         dpg.add_plot_axis(dpg.mvYAxis, label="y", tag="y_axis")
+    messages = dpg.add_text("System Messages", color = [0,124,255,255])
         
         #series belong to a y axis
         #dpg.add_line_series(x_data, y_data, label="ch 52", parent="y_axis")
@@ -134,16 +142,3 @@ dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
 dpg.destroy_context()
-
-# import dearpygui.dearpygui as dpg
-# import dearpygui.demo as demo
-
-# dpg.create_context()
-# dpg.create_viewport(title='Custom Title', width=600, height=600)
-
-# demo.show_demo()
-
-# dpg.setup_dearpygui()
-# dpg.show_viewport()
-# dpg.start_dearpygui()
-# dpg.destroy_context()
