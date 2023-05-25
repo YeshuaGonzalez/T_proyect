@@ -34,3 +34,4 @@ donde x es el conteo del número de espigas
 
 *FALTAN MAPA DE ELECTRODOS
 
+Nota de prueba
