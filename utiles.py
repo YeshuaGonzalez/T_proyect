@@ -8,6 +8,9 @@ Created on Sun Apr 23 11:05:16 2023
 import umap
 import umap.plot
 from umap import UMAP
+
+import numpy as np
+
 def spike_reducer(
     spikes,
     v_neighbors=70,
@@ -128,3 +131,37 @@ def spike_reducer(
 
     return reducer
 
+def StiGen(size_signal, frame_rate = 10000, zero = 9, on_ms = 1000, off_ms =0, n_rep = 1):
+    
+    #size_signal: tamaño de la señal
+    #frame_rate: tasa de adquisición
+    #zero: tiempo[s] del estímulo apagado
+    #on_ms : tiempo[ms] estímulo encendido (tren de pulsos)
+    #off_ms : tiempo[ms] estímulo apagado (tren de pulsos)
+    #n_rep : número de repeticiones del pulso
+    
+    first_part = np.zeros(zero * frame_rate, dtype = np.int8)
+    
+    for i in range(0,n_rep):
+        index = int(on_ms*(1/1000)*frame_rate)
+        if i == 0:
+            sec_part = np.ones(index, dtype = np.int8)
+        else:
+            sec_part = np.concatenate((sec_part, np.ones(index, dtype = np.int8)))
+        if (off_ms > 0):
+            index = int(off_ms*(1/1000)*frame_rate)
+            sec_part = np.concatenate((sec_part, np.zeros(index, dtype = np.int8)))
+    ttl = np.concatenate((first_part, sec_part)) #Poner como una tupla
+    print("Size TTL pulse: {}".format(len(ttl)))
+    
+    n_rep_tot = int(np.ceil(size_signal/len(ttl)))
+
+    stimulus = np.array([], dtype = np.int8)
+    for i in range(0,n_rep_tot):
+        stimulus = np.concatenate((stimulus,ttl))
+    
+    print("Size signal: {}".format(len(stimulus)))
+    if len(stimulus) > size_signal:
+        return stimulus[0:size_signal]
+    else:
+        return stimulus
