@@ -22,7 +22,7 @@ import utiles
 #path_file = "E:\\T_proyect\\20230622\\datamanager\\Rebanada02\\"
 
 #LINUX
-path_file = "/media/yeshua/ZEILER/T_proyect/20230622/datamanager/Rebanada02/"
+path_file = "/media/yeshua/zeiler_v2/MEA_data/20230622/datamanager/Rebanada02/"
 
 namefile = "L6.h5"
 
@@ -50,8 +50,8 @@ file_raw = h5py.File(path_file+namefile)
 signal_electrode = np.array(file_raw['Data']['Recording_0']['AnalogStream']['Stream_0']['ChannelData'][0])
 size_signal = len(signal_electrode)
 
-start = 90000
-finish = 95000
+start = 91000
+finish = 92000
 
 x = np.arange(0,size_signal)[start:finish]
 y = signal_electrode[start:finish]
