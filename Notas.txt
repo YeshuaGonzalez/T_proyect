@@ -18,7 +18,12 @@ Pasos para el Sorting de espigas
 	Que es aproximadamente 2 desviaciones estandar
 
 2.-Clasificación con base en su forma
-
+#UMAP
+reduced_spikes = spike_reducer(experiment_pckl, v_neighbors = 35, random_state = 18)
+spike_embedding = reduced_spikes.embedding_
+clusterer = hdbscan.HDBSCAN(min_cluster_size=15)
+#clusterer = hdbscan.HDBSCAN(min_cluster_size=30)
+clusterer.fit(spike_embedding)
 	Se usa UMAP que se basa en características topológicas para hacer la reducción de dimensiones de las señales. Pero se requiere una gran cantidad de datos para que funcione de manera óptima
 
 3.-Problemas del movimiento de electrodos (Esto no se ve en el MEA invitro)
